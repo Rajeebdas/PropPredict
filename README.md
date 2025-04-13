@@ -4,7 +4,7 @@ This is a web application that predicts real estate prices based on location, ar
 
 ## Link
 
-Open your web browser and go to `[http://127.0.0.1:5000/](https://proppredict.onrender.com)`
+Open your web browser and go to `https://proppredict.onrender.com`
 
 ## Features
 
