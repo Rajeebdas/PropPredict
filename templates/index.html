@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropPredict</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+            padding: 20px;
+            text-align: center;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #dde1e7;
+            background-color: #f8f9fa;
+            font-size: 16px;
+        }
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.25);
+            border-color: #4b6cb7;
+        }
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #3a5aa3, #0f1a33);
+        }
+        .result-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .result-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        .price-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4b6cb7;
+            margin: 15px 0;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+        }
+        .animate-pop {
+            animation: pop 0.5s ease-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .loading {
+            display: none;
+            margin: 0 auto;
+            text-align: center;
+            padding: 15px;
+        }
+        .features-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .feature-box {
+            flex: 0 0 31%;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        .feature-box h5 {
+            margin: 0;
+            color: #4b6cb7;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .feature-box p {
+            margin: 5px 0 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .logo {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc3545;
+        }
+        .bengaluru-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-house-heart me-2" viewBox="0 0 16 16">
+                                <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.309 8 6.982"/>
+                                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.707L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.646a.5.5 0 0 0 .708-.707L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207l-5-5-5 5V13.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5z"/>
+                            </svg>
+                            Real Estate Price Predictor
+                        </h2>
+                        <div class="bengaluru-subtitle">Bengaluru Property Price Estimation</div>
+                    </div>
+                    <div class="card-body p-4">
+                        <form action="/predict" method="post" id="prediction-form">
+                            {% if error %}
+                            <div class="error-message">
+                                {{ error }}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <label for="location" class="form-label fw-semibold">Location</label>
+                                <select class="form-select" name="location" id="location" required>
+                                    <option value="" selected disabled>Select a location</option>
+                                    {% for location in locations %}
+                                    <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>{{ location }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="sqft" class="form-label fw-semibold">Area (sq. ft.)</label>
+                                <input type="number" class="form-control" name="sqft" id="sqft" value="{{ sqft if sqft else '' }}" placeholder="Enter area in square feet" required autocomplete="off">
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="bath" class="form-label fw-semibold">Bathrooms</label>
+                                    <input type="number" class="form-control" name="bath" id="bath" value="{{ bath if bath else '' }}" placeholder="Number of bathrooms" min="1" max="10" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="bhk" class="form-label fw-semibold">BHK</label>
+                                    <input type="number" class="form-control" name="bhk" id="bhk" value="{{ bhk if bhk else '' }}" placeholder="Number of BHK" min="1" max="10" required>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calculator me-2" viewBox="0 0 16 16">
+                                        <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                        <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                    </svg>
+                                    Predict Price
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="loading mt-4" id="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Calculating price...</p>
+                        </div>
+                        
+                        {% if prediction %}
+                        <div class="result-container animate-pop mt-4">
+                            <h3 class="mb-3">Estimated Property Price</h3>
+                            
+                            {% if selected_location and sqft and bath and bhk %}
+                            <div class="features-container mb-4">
+                                <div class="feature-box">
+                                    <h5>LOCATION</h5>
+                                    <p>{{ selected_location }}</p>
+                                </div>
+                                <div class="feature-box">
+                                    <h5>AREA</h5>
+                                    <p>{{ sqft }} sq.ft</p>
+                                </div>
+                                <div class="feature-box">
+                                    <h5>CONFIG</h5>
+                                    <p>{{ bhk }} BHK, {{ bath }} Bath</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="price-value">{{ prediction }}</div>
+                            <p class="text-muted">This is an estimated price based on similar properties in Bengaluru</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show loading spinner when form is submitted
+            $('#prediction-form').submit(function() {
+                $('#loading').show();
+            });
+            
+            // Input validation
+            $('input[type="number"]').on('input', function() {
+                let min = parseInt($(this).attr('min'));
+                let max = parseInt($(this).attr('max'));
+                let val = parseInt($(this).val());
+                
+                if (val < min) {
+                    $(this).val(min);
+                } else if (max && val > max) {
+                    $(this).val(max);
+                }
+            });
+            
+            // Prevent browser dropdown/spinner UI for number inputs
+            $('input[type="number"]').on('mousewheel', function(e) {
+                e.preventDefault();
+            });
+            
+            // Prevent up/down arrow keys from incrementing/decrementing in the sqft field
+            $('#sqft').on('keydown', function(e) {
+                if (e.which === 38 || e.which === 40) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
