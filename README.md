@@ -4,7 +4,8 @@ This is a web application that predicts real estate prices based on location, ar
 
 ## Link
 
-Open your web browser and go to `https://proppredict.onrender.com`
+- Open your web browser and go to `https://proppredict.onrender.com`
+- [PropPredict App](https://proppredict.onrender.com)
 
 ## Features
 
