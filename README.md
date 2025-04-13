@@ -2,10 +2,9 @@
 
 This is a web application that predicts real estate prices based on location, area, and other features.
 
-## Link
+## Application Link
 
-- Open your web browser and go to `https://proppredict.onrender.com`
-- [PropPredict App](https://proppredict.onrender.com)
+- [PropPredict](https://proppredict.onrender.com)
 
 ## Features
 
